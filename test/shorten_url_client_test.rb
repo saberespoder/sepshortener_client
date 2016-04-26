@@ -1,11 +1,14 @@
 require 'test_helper'
 
-class ShortenUrlClientTest < Minitest::Test
-  def test_that_it_has_a_version_number
-    refute_nil ::ShortenUrlClient::VERSION
-  end
 
-  def test_it_does_something_useful
-    assert false
+class TestedClass
+  include ShortenUrlClient
+end
+
+describe ShortenUrlClient do
+  let(:subject) { TestedClass.new }
+
+  it 'work' do
+    subject.short_url.must_equal nil
   end
 end
