@@ -1,10 +1,12 @@
 require 'sepshortener_client/version'
-require 'rails'
+require 'digest'
 
 module SepshortenerClient
   INBOUNDSMS_TOKEN  = "INBOUNDSMS".freeze
   SEPRESEARCH_TOKEN = "SEPRESEARCH".freeze
   SEPCONTENT_TOKEN  = "SEPCONTENT".freeze
+
+  CONTENT_TYPE = 'application/json'.freeze
 
   def short_url(url)
     return unless url
@@ -13,8 +15,8 @@ module SepshortenerClient
       body: { url: url }.to_json,
       headers: {
         'salt' => Digest::MD5.hexdigest("#{Time.now.month}#{url}#{ ENV['salt']}" ),
-        'Content-Type' => 'application/json',
-        'Accept' => 'application/json'
+        'Content-Type' => CONTENT_TYPE,
+        'Accept' => CONTENT_TYPE 
       }
     )
 
@@ -25,7 +27,7 @@ module SepshortenerClient
 
   def sanitize_link(link)
     link.gsub!(/(http(s)?:\/\/)+/, '')
-    "#{::Rails.application.config.force_ssl ? 'https' : 'http'}://#{link}"
+    "https://#{link}"
   end
 
   def real_link(link)
