@@ -89,5 +89,35 @@ describe SepshortenerClient do
   end
 
   describe '#real_link' do
+    describe 'when link is missing' do
+      it 'returns nil' do
+        subject.real_link(nil).must_equal nil
+      end
+    end
+
+    describe 'when link contain INBOUNDSMS token' do
+      INBOUNDSMS_HOST = 'site.com'
+
+      it 'replaces token to site' do
+        subject.real_link('INBOUNDSMS/index.html').must_equal 'site.com/index.html'
+      end
+    end
+
+    describe 'when link contain SEPRESEARCH token' do
+      SEPRESEARCH_HOST = 'site.com'
+
+      it 'replaces token to site' do
+        subject.real_link('SEPRESEARCH/index.html').must_equal 'site.com/index.html'
+      end
+    end
+
+    describe 'when link contain SEPCONTENT token' do
+      SEPCONTENT_HOST = 'site.com'
+
+      it 'replaces token to site' do
+        subject.real_link('SEPCONTENT/index.html').must_equal 'site.com/index.html'
+      end
+    end
+
   end
 end
