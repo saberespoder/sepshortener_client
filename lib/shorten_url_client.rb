@@ -6,7 +6,8 @@ module ShortenUrlClient
   end
 
   def sanitize_link(link)
-    "#{::Rails.application.config.force_ssl ? 'https' : 'http'}://#{link}".gsub(/(http(s)?:\/\/)+/, '\1')
+    link.gsub!(/(http(s)?:\/\/)+/, '')
+    "#{::Rails.application.config.force_ssl ? 'https' : 'http'}://#{link}"
   end
 
   def real_link(link)
