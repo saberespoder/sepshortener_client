@@ -1,5 +1,7 @@
 require 'sepshortener_client/version'
+require 'net/https'
 require 'digest'
+require 'uri'
 
 module SepshortenerClient
   INBOUNDSMS_TOKEN  = "INBOUNDSMS".freeze
@@ -8,19 +10,25 @@ module SepshortenerClient
 
   CONTENT_TYPE = 'application/json'.freeze
 
-  def short_url(url)
-    return unless url
-    response = HTTParty.post(
-      sanitize_link("#{SEPSHORTENER_HOST}/short_link.json"),
-      body: { url: url }.to_json,
-      headers: {
-        'salt' => Digest::MD5.hexdigest("#{Time.now.month}#{url}#{ ENV['salt']}" ),
-        'Content-Type' => CONTENT_TYPE,
-        'Accept' => CONTENT_TYPE 
-      }
-    )
+  def short_url(link)
+    return unless link
 
-    sanitize_link("#{SEPSHORTENER_REPLY}/#{response['short_url']}") if response.code == 200
+    uri = URI.parse(sanitize_link("#{SEPSHORTENER_HOST}/short_link.json"))
+    params = { url: link }
+    headers = {
+      'salt' => Digest::MD5.hexdigest("#{Time.now.month}#{url}#{ ENV['salt']}" ),
+      'Content-Type' => CONTENT_TYPE,
+      'Accept' => CONTENT_TYPE 
+    }
+
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+    response = http.get(uri.path, params.to_json, headers)
+    data = JSON.parse(response.body)
+
+    sanitize_link("#{SEPSHORTENER_REPLY}/#{data['short_url']}") if response.code == 200
   rescue => e
     Honeybadger.notify(e)
   end
