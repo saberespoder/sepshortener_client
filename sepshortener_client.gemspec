@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'shorten_url_client/version'
+require 'sepshortener_client/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "shorten_url_client"
-  spec.version       = ShortenUrlClient::VERSION
+  spec.name          = "sepshortener_client"
+  spec.version       = SepshortenerClient::VERSION
   spec.authors       = ["Anton Davydov"]
   spec.email         = ["antondavydov.o@gmail.com"]
 

@@ -1,18 +1,18 @@
 require 'test_helper'
 
 class TestedClass
-  include ShortenUrlClient
+  include SepshortenerClient
 end
 
 module OtherModule
-  include ShortenUrlClient
+  include SepshortenerClient
 end
 
 class OtherClass
   include OtherModule
 end
 
-describe ShortenUrlClient do
+describe SepshortenerClient do
   let(:subject) { TestedClass.new }
 
   it 'works' do

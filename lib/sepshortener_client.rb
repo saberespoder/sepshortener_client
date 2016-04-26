@@ -1,7 +1,7 @@
-require 'shorten_url_client/version'
+require 'sepshortener_client/version'
 require 'rails'
 
-module ShortenUrlClient
+module SepshortenerClient
   def short_url(url)
   end
 
