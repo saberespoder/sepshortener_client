@@ -16,7 +16,7 @@ module SepshortenerClient
     uri = URI.parse(sanitize_link("#{SEPSHORTENER_HOST}/short_link.json"))
     params = { url: link }
     headers = {
-      'salt' => Digest::MD5.hexdigest("#{Time.now.month}#{url}#{ ENV['salt']}" ),
+      'salt' => Digest::MD5.hexdigest("#{Time.now.month}#{url}#{ENV['salt']}" ),
       'Content-Type' => CONTENT_TYPE,
       'Accept' => CONTENT_TYPE 
     }
@@ -29,12 +29,10 @@ module SepshortenerClient
     data = JSON.parse(response.body)
 
     sanitize_link("#{SEPSHORTENER_REPLY}/#{data['short_url']}") if response.code == 200
-  rescue => e
-    Honeybadger.notify(e)
   end
 
   def sanitize_link(link)
-    link.gsub!(/(http(s)?:\/\/)+/, '')
+    link.sub!(/(http(s)?:\/\/)+/, '')
     "https://#{link}"
   end
 
