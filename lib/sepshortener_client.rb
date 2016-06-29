@@ -16,7 +16,7 @@ module SepshortenerClient
     uri = URI.parse(sanitize_link("#{SEPSHORTENER_HOST}/short_link.json"))
     params = { url: link }
     headers = {
-      'salt' => Digest::MD5.hexdigest("#{Time.now.month}#{url}#{ENV['salt']}" ),
+      'salt' => Digest::MD5.hexdigest("#{Time.now.month}#{link}#{ENV['salt']}" ),
       'Content-Type' => CONTENT_TYPE,
       'Accept' => CONTENT_TYPE 
     }
