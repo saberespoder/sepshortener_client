@@ -13,8 +13,8 @@ module SepshortenerClient
   def short_url(link)
     return unless link
 
-    uri = URI.parse(sanitize_link("#{SEPSHORTENER_HOST}/short_link.json"))
-    params = { url: link }
+    params = URI.encode_www_form("url" => link)
+    uri = URI.parse(sanitize_link("#{SEPSHORTENER_HOST}/short_link.json?#{params}"))
     headers = {
       'salt' => Digest::MD5.hexdigest("#{Time.now.month}#{link}#{ENV['salt']}" ),
       'Content-Type' => CONTENT_TYPE,
@@ -25,10 +25,10 @@ module SepshortenerClient
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-    response = http.get(uri.path, params.to_json, headers)
+    response = http.get(uri.path, headers)
     data = JSON.parse(response.body)
 
-    sanitize_link("#{SEPSHORTENER_REPLY}/#{data['short_url']}") if response.code == 200
+    sanitize_link("#{ENV["SEPSHORTENER_REPLY"]}/#{data['short_url']}") if response.code == 200
   end
 
   def sanitize_link(link)
