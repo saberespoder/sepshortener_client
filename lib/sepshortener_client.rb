@@ -28,7 +28,7 @@ module SepshortenerClient
     response = http.get(uri.path, headers)
     data = JSON.parse(response.body)
 
-    sanitize_link("#{ENV["SEPSHORTENER_REPLY"]}/#{data['short_url']}") if response.code == 200
+    sanitize_link("#{ENV["SEPSHORTENER_REPLY"]}/#{data['short_url']}") if response.code.to_i == 200
   end
 
   def sanitize_link(link)
