@@ -32,7 +32,7 @@ module SepshortenerClient
   end
 
   def sanitize_link(link)
-    link.sub!(/(http(s)?:\/\/)+/, '')
+    link = link.sub(/(http(s)?:\/\/)+/, '')
     "https://#{link}"
   end
 

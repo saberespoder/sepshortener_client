@@ -39,6 +39,12 @@ describe SepshortenerClient do
       end
     end
 
+    describe 'when link is freeze and includes only one http prefix' do
+      it 'returns link with one http prefix' do
+        subject.sanitize_link('http://test_link/123'.freeze).must_equal('https://test_link/123')
+      end
+    end
+
     describe 'when link includes only one https prefix' do
       it 'returns link with one http prefix' do
         subject.sanitize_link('https://test_link/123').must_equal('https://test_link/123')
