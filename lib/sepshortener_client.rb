@@ -1,5 +1,5 @@
 require 'sepshortener_client/version'
-require 'net/https'
+require 'net/http'
 require 'digest'
 require 'uri'
 
@@ -22,9 +22,6 @@ module SepshortenerClient
     }
 
     http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
     response = http.get(uri.path, headers)
     data = JSON.parse(response.body)
 
@@ -33,7 +30,7 @@ module SepshortenerClient
 
   def sanitize_link(link)
     link = link.sub(/(http(s)?:\/\/)+/, '')
-    "https://#{link}"
+    "http://#{link}"
   end
 
   def real_link(link)

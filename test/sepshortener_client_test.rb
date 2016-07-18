@@ -27,33 +27,33 @@ describe SepshortenerClient do
   end
 
   describe '#sanitize_link' do
-    describe 'when link do not includes https prefix' do
-      it 'returns link with one https prefix' do
-        subject.sanitize_link('test_link/123').must_equal('https://test_link/123')
+    describe 'when link do not includes http prefix' do
+      it 'returns link with one http prefix' do
+        subject.sanitize_link('test_link/123').must_equal('http://test_link/123')
       end
     end
 
     describe 'when link includes only one http prefix' do
       it 'returns link with one http prefix' do
-        subject.sanitize_link('http://test_link/123').must_equal('https://test_link/123')
+        subject.sanitize_link('http://test_link/123').must_equal('http://test_link/123')
       end
     end
 
     describe 'when link is freeze and includes only one http prefix' do
       it 'returns link with one http prefix' do
-        subject.sanitize_link('http://test_link/123'.freeze).must_equal('https://test_link/123')
+        subject.sanitize_link('http://test_link/123'.freeze).must_equal('http://test_link/123')
       end
     end
 
-    describe 'when link includes only one https prefix' do
+    describe 'when link includes only one http prefix' do
       it 'returns link with one http prefix' do
-        subject.sanitize_link('https://test_link/123').must_equal('https://test_link/123')
+        subject.sanitize_link('http://test_link/123').must_equal('http://test_link/123')
       end
     end
 
     describe 'when link includes more than one http prefix' do
       it 'returns link with one http prefix' do
-        subject.sanitize_link('https://https://https://test_link/123').must_equal('https://test_link/123')
+        subject.sanitize_link('http://http://http://test_link/123').must_equal('http://test_link/123')
       end
     end
   end
