@@ -26,6 +26,8 @@ module SepshortenerClient
     data = JSON.parse(response.body)
 
     sanitize_link("#{ENV["SEPSHORTENER_REPLY"]}/#{data['short_url']}") if response.code.to_i == 200
+  rescue
+    link
   end
 
   def sanitize_link(link)
