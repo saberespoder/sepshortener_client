@@ -37,17 +37,14 @@ module SepshortenerClient
       {
         method: "post",
         url: "/short_link.json",
+        params: { url: link },
         headers: {
           'salt' => Digest::MD5.hexdigest("#{Time.now.month}#{link}#{ENV['salt']}"),
           'Content-Type' => CONTENT_TYPE,
           'Accept' => CONTENT_TYPE
-        },
-        params: {
-          url: link
         }
       }
     end
-
 
     params = {
       ops: request_params,
@@ -61,9 +58,10 @@ module SepshortenerClient
       http.request(req)
     end
 
-    data = JSON.parse(response.body)
+    # sanitize_link("#{ENV["SEPSHORTENER_REPLY"]}/#{data['short_url']}") if response.code.to_i == 200
 
-    sanitize_link("#{ENV["SEPSHORTENER_REPLY"]}/#{data['short_url']}") if response.code.to_i == 200
+    data = JSON.parse(response.body)
+    data['results'].map{ |r| r['body'] }
   rescue
     links
   end
