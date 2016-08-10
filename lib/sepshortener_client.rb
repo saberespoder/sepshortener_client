@@ -1,6 +1,7 @@
 require 'sepshortener_client/version'
 require 'sepshortener_client/sanitize_link'
 require 'sepshortener_client/salt'
+require 'sepshortener_client/batch_request'
 require 'net/http'
 require 'json'
 require 'uri'
@@ -33,44 +34,7 @@ module SepshortenerClient
   end
 
   def butch_shorting(links)
-    return [] if links.empty?
-
-    request_params = links.map do |link|
-      {
-        method: "post",
-        url: "/short_link.json",
-        params: { url: link },
-        headers: {
-          'salt' => Digest::MD5.hexdigest("#{Time.now.month}#{link}#{ENV['salt']}"),
-          'Content-Type' => CONTENT_TYPE,
-          'Accept' => CONTENT_TYPE
-        }
-      }
-    end
-
-    params = {
-      ops: request_params,
-      sequential: true
-    }
-
-    uri = URI(sanitize_link("#{SEPSHORTENER_HOST}/batch"))
-    req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
-    req.body = params.to_json
-    response = Net::HTTP.start(uri.hostname, uri.port) do |http|
-      http.request(req)
-    end
-
-    data = JSON.parse(response.body)
-
-    data['results'].map do |result|
-      data_hash = { origin_url: result['body']['origin_url'] }
-      data_hash[:short_url] = sanitize_link("#{ENV["SEPSHORTENER_REPLY"]}/#{result['body']['short_url']}") if result['body']['short_url']
-      data_hash[:error] = result['body']['error'] if result['body']['error']
-
-      data_hash
-    end
-  rescue
-    links
+    BatchRequest.new.call(links)
   end
 
   def sanitize_link(link)
