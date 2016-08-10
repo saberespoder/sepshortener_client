@@ -1,4 +1,5 @@
 require 'sepshortener_client/version'
+require 'sepshortener_client/sanitize_link'
 require 'sepshortener_client/salt'
 require 'net/http'
 require 'json'
@@ -73,8 +74,7 @@ module SepshortenerClient
   end
 
   def sanitize_link(link)
-    link = link.sub(/(http(s)?:\/\/)+/, '')
-    "http://#{link}"
+    SanitizeLink.call(link)
   end
 
   def real_link(link)
