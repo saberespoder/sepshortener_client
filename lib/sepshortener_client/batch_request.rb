@@ -1,3 +1,5 @@
+require 'json'
+
 module SepshortenerClient
   class BatchRequest
     def call(links)

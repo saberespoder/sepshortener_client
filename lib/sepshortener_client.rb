@@ -3,7 +3,6 @@ require 'sepshortener_client/sanitize_link'
 require 'sepshortener_client/salt'
 require 'sepshortener_client/batch_request'
 require 'net/http'
-require 'json'
 require 'uri'
 
 module SepshortenerClient
