@@ -1,6 +1,7 @@
 require 'sepshortener_client/version'
 require 'net/http'
 require 'digest'
+require 'json'
 require 'uri'
 
 module SepshortenerClient
@@ -51,17 +52,22 @@ module SepshortenerClient
       sequential: true
     }
 
-    uri = URI(sanitize_link("#{SEPSHORTENER_HOST}/short_link.json"))
+    uri = URI(sanitize_link("#{SEPSHORTENER_HOST}/batch"))
     req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
     req.body = params.to_json
     response = Net::HTTP.start(uri.hostname, uri.port) do |http|
       http.request(req)
     end
 
-    # sanitize_link("#{ENV["SEPSHORTENER_REPLY"]}/#{data['short_url']}") if response.code.to_i == 200
-
     data = JSON.parse(response.body)
-    data['results'].map{ |r| r['body'] }
+
+    data['results'].map do |result|
+      data_hash = { origin_url: result['body']['origin_url'] }
+      data_hash[:short_url] = sanitize_link("#{ENV["SEPSHORTENER_REPLY"]}/#{result['body']['short_url']}") if result['body']['short_url']
+      data_hash[:error] = result['body']['error'] if result['body']['error']
+
+      data_hash
+    end
   rescue
     links
   end
