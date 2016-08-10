@@ -1,6 +1,6 @@
 require 'sepshortener_client/version'
+require 'sepshortener_client/salt'
 require 'net/http'
-require 'digest'
 require 'json'
 require 'uri'
 
@@ -17,7 +17,7 @@ module SepshortenerClient
     params = URI.encode_www_form("url" => link)
     uri = URI.parse(sanitize_link("#{SEPSHORTENER_HOST}/short_link.json?#{params}"))
     headers = {
-      'salt' => Digest::MD5.hexdigest("#{Time.now.month}#{link}#{ENV['salt']}" ),
+      'salt' => Salt.generate(link),
       'Content-Type' => CONTENT_TYPE,
       'Accept' => CONTENT_TYPE
     }
