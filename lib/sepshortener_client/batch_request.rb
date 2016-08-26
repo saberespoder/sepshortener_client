@@ -16,7 +16,7 @@ module SepshortenerClient
         data_hash
       end
     rescue
-      links
+      links.map { |link| { origin_url: link } }
     end
 
   private
