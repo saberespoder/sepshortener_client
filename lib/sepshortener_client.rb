@@ -1,6 +1,8 @@
 require 'sepshortener_client/version'
+require 'sepshortener_client/sanitize_link'
+require 'sepshortener_client/salt'
+require 'sepshortener_client/batch_request'
 require 'net/http'
-require 'digest'
 require 'uri'
 
 module SepshortenerClient
@@ -16,9 +18,9 @@ module SepshortenerClient
     params = URI.encode_www_form("url" => link)
     uri = URI.parse(sanitize_link("#{SEPSHORTENER_HOST}/short_link.json?#{params}"))
     headers = {
-      'salt' => Digest::MD5.hexdigest("#{Time.now.month}#{link}#{ENV['salt']}" ),
+      'salt' => Salt.generate(link),
       'Content-Type' => CONTENT_TYPE,
-      'Accept' => CONTENT_TYPE 
+      'Accept' => CONTENT_TYPE
     }
 
     http = Net::HTTP.new(uri.host, uri.port)
@@ -30,9 +32,12 @@ module SepshortenerClient
     link
   end
 
+  def butch_shorting(links)
+    BatchRequest.new.call(links)
+  end
+
   def sanitize_link(link)
-    link = link.sub(/(http(s)?:\/\/)+/, '')
-    "http://#{link}"
+    SanitizeLink.call(link)
   end
 
   def real_link(link)
